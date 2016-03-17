@@ -72,11 +72,13 @@
 			.Libraries					= { 'Douceur-Lib-$Platform$-$Config$' }
 			.LinkerOutput				= '../bin/$Platform$-$Config$/$ProjectName$.exe'
 			.LinkerOptions				+ ' /SUBSYSTEM:CONSOLE'
+										+ ' ../lib/$Platform$-$Config$/imgui/imgui.lib'
 										+ ' kernel32.lib'
 										+ ' Ws2_32.lib'
 										+ ' LIBCMT.LIB'
 										+ ' User32.lib'
-										+ ' ../lib/$Platform$-$Config$/imgui/imgui.lib'
+										+ ' d3d11.lib'
+										+ ' d3dcompiler.lib'
 		}
 		Alias( '$ProjectName$-$Platform$-$Config$' ) { .Targets = '$ProjectName$-Exe-$Platform$-$Config$' }
 	}
