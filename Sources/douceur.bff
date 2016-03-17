@@ -13,8 +13,8 @@
 		.ProjectInputPaths			= '../$ProjectPath$\'
 		.ProjectBasePath			= '../Sources/$ProjectPath$\'
 
-		// Exclude Tests
-		.ProjectInputPathsExclude	= '$ProjectPath$\CoreTest\'
+		.LocalDebuggerCommand		= '^$(SolutionDir)../../bin/^$(Configuration)/$ProjectName$.exe'
+		.LocalDebuggerWorkingDirectory = '^$(SolutionDir)..\..'
 	}
 
 	// Unity
@@ -51,40 +51,8 @@
 		Using( .Config )
 		.OutputBase + '\$Platform$-$Config$'
 
-		// Static Library
-		Library( '$ProjectName$-Lib-$Platform$-$Config$' )
-		{
-			// Precompiled Header Creation/Use
-			.PCHInputFile				= '../$ProjectPath$\$PCHName$.cpp'
-			.PCHOutputFile				= '$OutputBase$\$ProjectName$\$PCHName$.pch'
-			.PCHOptions					+ ' /Yc"$PCHName$.h"'
-			.CompilerOptions			+ ' /Yu"$PCHName$.h" /Fp"$PCHOutputFile$"'
-
-			// Input (Unity)
-			.CompilerInputUnity			= '$ProjectName$-Unity-Windows'
-			// Ici tu rajoute le path des .cpp que tu ne fout pas dans un .unity
-			//.CompilerInputPath          = '../Sources/'
-
-			// Output
-			.CompilerOutputPath			= '$OutputBase$\$ProjectName$\'
- 			.LibrarianOutput 			= '$OutputBase$\$ProjectName$\$ProjectName$.lib'
-
- 			// La tu mets le path des headers du projet sa mere
- 			.CompilerOptions            + ' /I../$ProjectPath$'
-									    + ' /I../../DouceurExternal/Debug'
-		}
-		Alias( '$ProjectName$-$Platform$-$Config$' ) { .Targets = '$ProjectName$-Lib-$Platform$-$Config$' }
-	}
-
-	// Windows (Clang)
-	//--------------------------------------------------------------------------
-	ForEach( .Config in .Configs_Windows_Clang )
-	{
-		Using( .Config )
-		.OutputBase + '\$Platform$-$Config$'
-
-		// Static Library
-		Library( '$ProjectName$-Lib-$Platform$-$Config$' )
+		// Objects
+		ObjectList( '$ProjectName$-Lib-$Platform$-$Config$' )
 		{
 			// Input (Unity)
 			.CompilerInputUnity			= '$ProjectName$-Unity-Windows'
@@ -92,49 +60,26 @@
 			// Output
 			.CompilerOutputPath			= '$OutputBase$\$ProjectName$\'
  			.LibrarianOutput 			= '$OutputBase$\$ProjectName$\$ProjectName$.lib'
+
+ 			.CompilerOptions    		+ ' ' //ImGui
+ 										+ ' /I../../JourExternal/Debug/'
+
 		}
-		Alias( '$ProjectName$-$Platform$-$Config$' ) { .Targets = '$ProjectName$-Lib-$Platform$-$Config$' }
+
+		// Executable
+		Executable( '$ProjectName$-Exe-$Platform$-$Config$' )
+		{
+			.Libraries					= { 'Douceur-Lib-$Platform$-$Config$' }
+			.LinkerOutput				= '../bin/$Platform$-$Config$/$ProjectName$.exe'
+			.LinkerOptions				+ ' /SUBSYSTEM:CONSOLE'
+										+ ' kernel32.lib'
+										+ ' Ws2_32.lib'
+										+ ' LIBCMT.LIB'
+										+ ' User32.lib'
+										+ ' ../lib/$Platform$-$Config$/imgui/imgui.lib'
+		}
+		Alias( '$ProjectName$-$Platform$-$Config$' ) { .Targets = '$ProjectName$-Exe-$Platform$-$Config$' }
 	}
-	
-	// Linux (GCC)
-    //--------------------------------------------------------------------------
-    ForEach( .Config in .Configs_Linux_GCC )
-    {
-        Using( .Config )
-        .OutputBase + '\$Platform$-$Config$'
-
-        // Static Library
-        Library( '$ProjectName$-Lib-$Platform$-$Config$' )
-        {
-            // Input (Unity)
-            .CompilerInputUnity         = '$ProjectName$-Unity-Linux'
-
-            // Output
-            .CompilerOutputPath         = '$OutputBase$\$ProjectName$\'
-            .LibrarianOutput            = '$OutputBase$\$ProjectName$\$ProjectName$.a'
-        }
-        Alias( '$ProjectName$-$Platform$-$Config$' ) { .Targets = '$ProjectName$-Lib-$Platform$-$Config$' }
-    }
-
-    // OSX (Clang)
-    //--------------------------------------------------------------------------
-    ForEach( .Config in .Configs_OSX_Clang )
-    {
-        Using( .Config )
-        .OutputBase + '\$Platform$-$Config$'
-
-        // Static Library
-        Library( '$ProjectName$-Lib-$Platform$-$Config$' )
-        {
-            // Input (Unity)
-            .CompilerInputUnity         = '$ProjectName$-Unity-OSX'
-
-            // Output
-            .CompilerOutputPath         = '$OutputBase$\$ProjectName$\'
-            .LibrarianOutput            = '$OutputBase$\$ProjectName$\$ProjectName$.a'
-        }
-        Alias( '$ProjectName$-$Platform$-$Config$' ) { .Targets = '$ProjectName$-Lib-$Platform$-$Config$' }
-    }
 
 	// Aliases
 	//--------------------------------------------------------------------------
