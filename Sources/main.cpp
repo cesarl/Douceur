@@ -1,10 +1,11 @@
 #include "DouceurPCH.h"
 
+#include <string>
 #include <stdlib.h>
 #include <tchar.h>
 #include <d3d11.h>
 
-#include "DX11.hpp""
+#include "DX11.hpp"
 #include "ImGuiDX11.hpp"
 #include "Serial.hpp"
 #include "imgui/imgui.h"
@@ -87,6 +88,30 @@ int main(int ac, const char **av)
 		{
 			ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiSetCond_FirstUseEver);     // Normally user code doesn't need/want to call it because positions are saved in .ini file anyway. Here we just want to make the demo initial state a bit more friendly!
 			ImGui::ShowTestWindow(&show_test_window);
+		}
+
+		//Arduino test
+		{
+			static Serial *arduino = nullptr;
+			if (!arduino)
+			{
+				arduino = new Serial("COM6");
+			}
+			if (ImGui::Begin("Arduino test"))
+			{
+				char buffer[1024];
+				arduino->WriteData("A", 1);
+				int count = arduino->ReadData(buffer, 1023);
+				//std::string msg;
+				while (count)
+				{
+					buffer[count] = '\0';
+					//msg += buffer;
+					count = arduino->ReadData(buffer, 1023);
+				}
+				//ImGui::Text(msg.c_str());
+			}
+			ImGui::End();
 		}
 
 		// Rendering

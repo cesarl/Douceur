@@ -61,8 +61,7 @@
 			.CompilerOutputPath			= '$OutputBase$\$ProjectName$\'
  			.LibrarianOutput 			= '$OutputBase$\$ProjectName$\$ProjectName$.lib'
 
- 			.CompilerOptions    		+ ' ' //ImGui
- 										+ ' /I../../JourExternal/Debug/'
+ 			.CompilerOptions    		+ ' /I../../JourExternal/Debug/'
 
 		}
 
