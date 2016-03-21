@@ -109,12 +109,12 @@ Compiler( 'Compiler-x64-OSX' )
                             + ' /D"WIN32_LEAN_AND_MEAN" /D_WIN32 /D__WINDOWS__'
                             + ' /D"_CRT_SECURE_NO_WARNINGS"' // don't warn about unsafe functions
                             + ' /D"_WINSOCK_DEPRECATED_NO_WARNINGS"' // don't warn about deprecated winsock functions - TODO:C Update API use
-                            + ' /D_NO_DEBUG_HEAP'
+                            + ' /D"_NO_DEBUG_HEAP"'
     .PCHOptions             = .CompilerOptions
                             + ' /Fp"%2" /Fo"%3"'
     .CompilerOptions        + ' /Fo"%2"'
-    .LibrarianOptions       = '/NODEFAULTLIB /WX /NOLOGO /OUT:"%2" "%1"'
-    .LinkerOptions          = '/NODEFAULTLIB /WX /NOLOGO /INCREMENTAL:NO /OUT:"%2" "%1" /DEBUG'
+    .LibrarianOptions       = '/WX /NOLOGO /OUT:"%2" "%1"'
+    .LinkerOptions          = '/WX /NOLOGO /INCREMENTAL:NO /OUT:"%2" "%1" /DEBUG'
 
     // Optimizations
     .CompilerDebugOptimizations     = ' /MTd /Od /RTC1 /GS /Oy- /GR- /analyze'
@@ -306,7 +306,7 @@ Compiler( 'Compiler-x64-OSX' )
     .PCHOptions             = .CompilerOptions // TODO: Configure this properly
 
     .LibrarianOptions       = 'rc "%2" "%1"' // NOTE: output must come first
-    .LinkerOptions          = '/NODEFAULTLIB /WX /NOLOGO /INCREMENTAL:NO /OUT:"%2" "%1" /DEBUG'
+    .LinkerOptions          = ' /WX /NOLOGO /INCREMENTAL:NO /OUT:"%2" "%1" /DEBUG'
                             + ' /LIBPATH:"$WindowsLibPaths$/x86" /LIBPATH:"$VSBasePath$/VC/lib"'
                             + ' /MACHINE:X86'
 

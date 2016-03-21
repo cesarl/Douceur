@@ -1,6 +1,5 @@
 #include "DouceurPCH.h"
 
-#include <string>
 #include <stdlib.h>
 #include <tchar.h>
 #include <d3d11.h>
