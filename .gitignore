@@ -239,3 +239,6 @@ tmp/*
 *.fdb
 lib/*
 *.ini
+*.ini
+imgui.ini
+*.ini

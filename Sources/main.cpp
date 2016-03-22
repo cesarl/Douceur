@@ -45,12 +45,15 @@ int main(int ac, const char **av)
 	//io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
 
 	bool show_test_window = true;
-	bool show_another_window = false;
 	ImVec4 clear_col = ImColor(114, 144, 154);
-
 	// Main loop
 	MSG msg;
 	ZeroMemory(&msg, sizeof(msg));
+
+	std::string arduinoMsg;
+	std::string arduinoDisplayMsg;
+	bool messageEnded = true;
+
 	while (msg.message != WM_QUIT)
 	{
 		if (PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))
@@ -61,32 +64,17 @@ int main(int ac, const char **av)
 		}
 		ImGui_ImplDX11_NewFrame();
 
-		// 1. Show a simple window
-		// Tip: if we don't call ImGui::Begin()/ImGui::End() the widgets appears in a window automatically called "Debug"
 		{
-			static float f = 0.0f;
-			ImGui::Text("Hello, world!");
-			ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
-			ImGui::ColorEdit3("clear color", (float*)&clear_col);
-			if (ImGui::Button("Test Window")) show_test_window ^= 1;
-			if (ImGui::Button("Another Window")) show_another_window ^= 1;
+			ImGui::SetNextWindowPos(ImVec2(10, 10));
+			ImGui::Begin("FPS", nullptr, ImVec2(0, 0), 0.3f, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-		}
-
-		// 2. Show another simple window, this time using an explicit Begin/End pair
-		if (show_another_window)
-		{
-			ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiSetCond_FirstUseEver);
-			ImGui::Begin("Another Window", &show_another_window);
-			ImGui::Text("Hello");
 			ImGui::End();
 		}
 
-		// 3. Show the ImGui test window. Most of the sample code is in ImGui::ShowTestWindow()
-		if (show_test_window)
+		if (false)
 		{
 			ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiSetCond_FirstUseEver);     // Normally user code doesn't need/want to call it because positions are saved in .ini file anyway. Here we just want to make the demo initial state a bit more friendly!
-			ImGui::ShowTestWindow(&show_test_window);
+			ImGui::ShowTestWindow(nullptr);
 		}
 
 		//Arduino test
@@ -96,21 +84,44 @@ int main(int ac, const char **av)
 			{
 				arduino = new Serial("COM6");
 			}
-			if (ImGui::Begin("Arduino test"))
+			if (arduino->IsConnected())
 			{
-				char buffer[1024];
-				arduino->WriteData("A", 1);
-				int count = arduino->ReadData(buffer, 1023);
-				//std::string msg;
-				while (count)
+				if (ImGui::Begin("Arduino test"))
 				{
-					buffer[count] = '\0';
-					//msg += buffer;
-					count = arduino->ReadData(buffer, 1023);
+					char buffer[2048];
+					if (messageEnded)
+					{
+						arduino->WriteData("A", 1);
+						messageEnded = false;
+					}
+					while (!messageEnded)
+					{
+						int count = arduino->ReadData(buffer, 2047);
+						if (count)
+						{
+							buffer[count] = '\0';
+							if (buffer[count - 1] == '@')
+							{
+								buffer[count - 1] = '\0';
+								messageEnded = true;
+							}
+							arduinoMsg += buffer;
+						}
+						else
+						{
+							break;
+						}
+					}
+					if (messageEnded)
+					{
+						arduinoDisplayMsg = arduinoMsg;
+						arduinoMsg.clear();
+					}
+					ImGui::TextWrapped(arduinoDisplayMsg.c_str());
+					ImGui::Text("Message size : %i", arduinoDisplayMsg.size());
 				}
-				//ImGui::Text(msg.c_str());
+				ImGui::End();
 			}
-			ImGui::End();
 		}
 
 		// Rendering
