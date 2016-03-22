@@ -72,6 +72,7 @@
 			.LinkerOutput				= '../bin/$Platform$-$Config$/$ProjectName$.exe'
 			.LinkerOptions				+ ' /SUBSYSTEM:CONSOLE'
 										+ ' ../lib/$Platform$-$Config$/imgui/imgui.lib'
+										+ ' ../lib/$Platform$-$Config$/soloud/soloud.lib'
 										+ ' kernel32.lib'
 										+ ' Ws2_32.lib'
 										+ ' LIBCMT.LIB'

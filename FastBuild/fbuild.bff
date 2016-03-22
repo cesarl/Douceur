@@ -552,6 +552,7 @@ VCXProject( 'UpdateSolution-proj' )
 
 // External
 #include "../../DouceurExternal/bff_files/imgui.bff"
+#include "../../DouceurExternal/bff_files/soloud.bff"
 
 // Douceur
 #include "../Sources/Douceur.bff"
@@ -626,7 +627,7 @@ ForEach( .Config in .Configs )
         .Targets        = { 
                             // Put externals here
                             'ImGui-$Platform$-$Config$',
-                            //'soloud-$Platform$-$Config$',
+                            'soloud-$Platform$-$Config$',
                           }
     }
 }
@@ -698,7 +699,7 @@ VSSolution( 'solution' )
     [ 
         .Path           = '0. External'
         .Projects       = { 'ImGui-proj',
-        					//'SoLoud-proj'
+        					'SoLoud-proj'
         				  }
     ]
     .Folder_1_Libs =
