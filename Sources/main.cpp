@@ -6,8 +6,9 @@
 
 #include "DX11.hpp"
 #include "ImGuiDX11.hpp"
+
 #include "Serial.hpp"
-#include "imgui/imgui.h"
+#include "Board.hpp"
 
 
 int main(int ac, const char **av)
@@ -54,6 +55,9 @@ int main(int ac, const char **av)
 	std::string arduinoDisplayMsg;
 	bool messageEnded = true;
 
+	Serial arduino("COM6");
+	Board  board;
+
 	while (msg.message != WM_QUIT)
 	{
 		if (PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))
@@ -79,24 +83,19 @@ int main(int ac, const char **av)
 
 		//Arduino test
 		{
-			static Serial *arduino = nullptr;
-			if (!arduino)
-			{
-				arduino = new Serial("COM6");
-			}
-			if (arduino->IsConnected())
+			if (arduino.IsConnected())
 			{
 				if (ImGui::Begin("Arduino test"))
 				{
 					char buffer[2048];
 					if (messageEnded)
 					{
-						arduino->WriteData("A", 1);
+						arduino.WriteData("A", 1);
 						messageEnded = false;
 					}
 					while (!messageEnded)
 					{
-						int count = arduino->ReadData(buffer, 2047);
+						int count = arduino.ReadData(buffer, 2047);
 						if (count)
 						{
 							buffer[count] = '\0';
@@ -114,6 +113,8 @@ int main(int ac, const char **av)
 					}
 					if (messageEnded)
 					{
+						board.updatePadsVoltage(arduinoMsg);
+
 						arduinoDisplayMsg = arduinoMsg;
 						arduinoMsg.clear();
 					}
@@ -121,6 +122,7 @@ int main(int ac, const char **av)
 					ImGui::Text("Message size : %i", arduinoDisplayMsg.size());
 				}
 				ImGui::End();
+				board.displayPadsVoltage();
 			}
 		}
 

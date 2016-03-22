@@ -7,5 +7,8 @@
 
 #include <vector>
 #include <string>
+#include <stdint.h>
+
+#include "imgui/imgui.h"
 
 //------------------------------------------------------------------------------
