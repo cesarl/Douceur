@@ -61,7 +61,8 @@
 			.CompilerOutputPath			= '$OutputBase$\$ProjectName$\'
  			.LibrarianOutput 			= '$OutputBase$\$ProjectName$\$ProjectName$.lib'
 
- 			.CompilerOptions    		+ ' /I../../JourExternal/Debug/'
+ 			.CompilerOptions    		+ ' /I../../DouceurExternal/Debug/'
+ 										+ ' /I../../DouceurExternal/Soloud/Include/'
 
 		}
 
@@ -79,6 +80,7 @@
 										+ ' User32.lib'
 										+ ' d3d11.lib'
 										+ ' d3dcompiler.lib'
+										+ ' ole32.lib' //soloud
 		}
 		Alias( '$ProjectName$-$Platform$-$Config$' ) { .Targets = '$ProjectName$-Exe-$Platform$-$Config$' }
 	}

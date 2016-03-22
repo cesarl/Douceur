@@ -1,12 +1,15 @@
 #include "DouceurPCH.h"
 #include "Board.hpp"
+#include "Soloud.h"
 
-
-Board::Board()
+Board::Board(SoLoud::Soloud *soloud)
 {
+	assert(soloud != nullptr);
+	m_soloud = soloud;
 	for (uint8_t i = 0; i < MAX_PAD_NUMBER; ++i)
 	{
 		m_pads[i].setPort(i);
+		m_pads[i].setSoloud(soloud);
 	}
 }
 

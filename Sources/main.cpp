@@ -10,10 +10,17 @@
 #include "Serial.hpp"
 #include "Board.hpp"
 
+#include "soloud.h"
+#include "soloud_wav.h"
 
 int main(int ac, const char **av)
 {
-	//Serial arduino("COM6");
+	SoLoud::Soloud soloud;
+	soloud.init();
+	SoLoud::Wav sheep;
+	sheep.load("../DouceurExternal/audio-samples/sheep.wav");
+	sheep.setLooping(true);
+	soloud.play(sheep);
 
 	// Create application window
 	WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, LoadCursor(NULL, IDC_ARROW), NULL, NULL, _T("Douceur"), NULL };
@@ -56,7 +63,7 @@ int main(int ac, const char **av)
 	bool messageEnded = true;
 
 	Serial arduino("COM6");
-	Board  board;
+	Board  board(&soloud);
 
 	while (msg.message != WM_QUIT)
 	{
@@ -135,6 +142,8 @@ int main(int ac, const char **av)
 	ImGui_ImplDX11_Shutdown();
 	CleanupDeviceD3D();
 	UnregisterClass(_T("Douceur"), wc.hInstance);
+
+	soloud.deinit();
 
 	return EXIT_SUCCESS;
 }
