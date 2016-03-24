@@ -4,18 +4,18 @@
 
 #define MAX_PAD_NUMBER 6
 
-namespace SoLoud
+namespace FMOD
 {
-	class Soloud;
+	class System;
 }
 
 class Board
 {
 public:
-	Board(SoLoud::Soloud *soloud);
+	Board(FMOD::System *fmodSystem);
 	void updatePadsVoltage(const std::string &buffer);
 	void displayPadsVoltage() const;
 private:
 	Pad m_pads[MAX_PAD_NUMBER];
-	SoLoud::Soloud *m_soloud;
+	FMOD::System *m_fmodSystem;
 };

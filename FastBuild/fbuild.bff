@@ -474,7 +474,7 @@ Compiler( 'Compiler-x64-OSX' )
     .IntermediateDirectory      = '^$(SolutionDir)\..\tmp2'
     .Platform = 'Win32' // unused
     .PlatformToolset = 'v120'
-    .IncludeSearchPath          = '^$(SolutionDir);.\'
+    .IncludeSearchPath          = '^$(SolutionDir);.\;"C:/Program Files (x86)/FMOD SoundSystem/FMOD Studio API Windows/api/lowlevel/inc/"'
     .X86Defines                 = 'WIN32_LEAN_AND_MEAN;_WIN32;__WINDOWS__;WIN32;'
     .X64Defines                 = 'WIN32_LEAN_AND_MEAN;_WIN32;__WINDOWS__;WIN64;'
     .DebugDefines               = 'DEBUG;PROFILING_ENABLED'
@@ -552,7 +552,6 @@ VCXProject( 'UpdateSolution-proj' )
 
 // External
 #include "../../DouceurExternal/bff_files/imgui.bff"
-#include "../../DouceurExternal/bff_files/soloud.bff"
 
 // Douceur
 #include "../Sources/Douceur.bff"
@@ -627,7 +626,6 @@ ForEach( .Config in .Configs )
         .Targets        = { 
                             // Put externals here
                             'ImGui-$Platform$-$Config$',
-                            'soloud-$Platform$-$Config$',
                           }
     }
 }
@@ -699,7 +697,6 @@ VSSolution( 'solution' )
     [ 
         .Path           = '0. External'
         .Projects       = { 'ImGui-proj',
-        					'SoLoud-proj'
         				  }
     ]
     .Folder_1_Libs =

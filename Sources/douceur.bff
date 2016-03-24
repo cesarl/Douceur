@@ -10,7 +10,7 @@
 	VCXProject( '$ProjectName$-proj' )
 	{
 		.ProjectOutput				= '../tmp/VisualStudio/Projects/$ProjectName$.vcxproj'
-		.ProjectInputPaths			= '../$ProjectPath$\'
+		.ProjectInputPaths			= {'../$ProjectPath$\', '"C:/Program Files (x86)/FMOD SoundSystem/FMOD Studio API Windows/api/lowlevel/inc/"'}
 		.ProjectBasePath			= '../Sources/$ProjectPath$\'
 
 		.LocalDebuggerCommand		= '^$(SolutionDir)../../bin/^$(Configuration)/$ProjectName$.exe'
@@ -62,7 +62,7 @@
  			.LibrarianOutput 			= '$OutputBase$\$ProjectName$\$ProjectName$.lib'
 
  			.CompilerOptions    		+ ' /I../../DouceurExternal/Debug/'
- 										+ ' /I../../DouceurExternal/Soloud/Include/'
+ 										+ ' /I"C:/Program Files (x86)/FMOD SoundSystem/FMOD Studio API Windows/api/lowlevel/inc/"'
 
 		}
 
@@ -73,7 +73,7 @@
 			.LinkerOutput				= '../bin/$Platform$-$Config$/$ProjectName$.exe'
 			.LinkerOptions				+ ' /SUBSYSTEM:CONSOLE'
 										+ ' ../lib/$Platform$-$Config$/imgui/imgui.lib'
-										+ ' ../lib/$Platform$-$Config$/soloud/soloud.lib'
+										+ ' "C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\lib\fmod64_vc.lib"'
 										+ ' kernel32.lib'
 										+ ' Ws2_32.lib'
 										+ ' LIBCMT.LIB'

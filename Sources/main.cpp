@@ -10,18 +10,13 @@
 #include "Serial.hpp"
 #include "Board.hpp"
 
-#include "soloud.h"
-#include "soloud_wav.h"
+#include "fmod.hpp"
+
+//#include "soloud.h"
+//#include "soloud_wav.h"
 
 int main(int ac, const char **av)
 {
-	SoLoud::Soloud soloud;
-	soloud.init();
-	SoLoud::Wav sheep;
-	sheep.load("../DouceurExternal/audio-samples/sheep.wav");
-	sheep.setLooping(true);
-	soloud.play(sheep);
-
 	// Create application window
 	WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, LoadCursor(NULL, IDC_ARROW), NULL, NULL, _T("Douceur"), NULL };
 	RegisterClassEx(&wc);
@@ -62,11 +57,29 @@ int main(int ac, const char **av)
 	std::string arduinoDisplayMsg;
 	bool messageEnded = true;
 
+	FMOD::System *fmodSystem;
+	FMOD::System_Create(&fmodSystem);
+
+	FMOD::Sound        *sound = 0;
+	FMOD::Channel      *channel = 0;
+	FMOD::ChannelGroup *mastergroup = 0;
+
+	fmodSystem->init(32, FMOD_INIT_NORMAL, 0);
+
+	fmodSystem->getMasterChannelGroup(&mastergroup);
+
+	fmodSystem->createSound("../DouceurExternal/audio-samples/Yamaha-1.wav", FMOD_LOOP_NORMAL, 0, &sound);
+
+	unsigned int soundLength = 0;
+	sound->getLength(&soundLength, FMOD_TIMEUNIT_MS);
+
 	Serial arduino("COM6");
-	Board  board(&soloud);
+	Board  board(fmodSystem);
 
 	while (msg.message != WM_QUIT)
 	{
+		fmodSystem->update();
+
 		if (PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))
 		{
 			TranslateMessage(&msg);
@@ -75,10 +88,47 @@ int main(int ac, const char **av)
 		}
 		ImGui_ImplDX11_NewFrame();
 
+		static bool first = false;
+		static int from = 0;
+		static int to = 400;
+		static float freq = 1.f;
+		static float pan = 0.f;
+		static float pitch = 0.f;
+		if (!first)
+		{
+			fmodSystem->playSound(sound, mastergroup, false, &channel);
+			first = true;
+			to = soundLength;
+			channel->getFrequency(&freq);
+			channel->getPitch(&pitch);
+		}
+
 		{
 			ImGui::SetNextWindowPos(ImVec2(10, 10));
 			ImGui::Begin("FPS", nullptr, ImVec2(0, 0), 0.3f, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+			ImGui::End();
+		}
+
+		{
+			ImGui::Begin("SoloudTest");
+
+			bool changed = ImGui::SliderInt("from", (int*)&from, 0, soundLength - 1);
+			changed |= ImGui::SliderInt("to", (int*)&to, 1, soundLength);
+			changed |= ImGui::SliderFloat("freq", &freq, 0, 500000.f);
+			changed |= ImGui::SliderFloat("pan", &pan, -10.f, 10.f);
+			changed |= ImGui::SliderFloat("pan", &pan, -1.f, 1.f);
+			changed |= ImGui::SliderFloat("pitch", &pitch, 0.f, 10.f);
+			if (changed)
+			{
+				if (from >= to)
+				{
+					from = to - 1;
+				}
+				channel->setLoopPoints(from, FMOD_TIMEUNIT_MS, to, FMOD_TIMEUNIT_MS);
+				channel->setFrequency(freq);
+				channel->setPan(pan);
+			}
 			ImGui::End();
 		}
 
@@ -142,8 +192,6 @@ int main(int ac, const char **av)
 	ImGui_ImplDX11_Shutdown();
 	CleanupDeviceD3D();
 	UnregisterClass(_T("Douceur"), wc.hInstance);
-
-	soloud.deinit();
 
 	return EXIT_SUCCESS;
 }

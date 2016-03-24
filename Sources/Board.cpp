@@ -1,15 +1,15 @@
 #include "DouceurPCH.h"
 #include "Board.hpp"
-#include "Soloud.h"
+#include "fmod.hpp"
 
-Board::Board(SoLoud::Soloud *soloud)
+Board::Board(FMOD::System *fmodSystem)
 {
-	assert(soloud != nullptr);
-	m_soloud = soloud;
+	assert(fmodSystem != nullptr);
+	m_fmodSystem = fmodSystem;
 	for (uint8_t i = 0; i < MAX_PAD_NUMBER; ++i)
 	{
 		m_pads[i].setPort(i);
-		m_pads[i].setSoloud(soloud);
+		m_pads[i].setFmodSystem(fmodSystem);
 	}
 }
 
