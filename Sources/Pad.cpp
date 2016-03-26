@@ -22,7 +22,7 @@ DcrTone::DcrTone(FMOD::System *system)
 	, channel(nullptr)
 	, editorPlay(false)
 	, voltageMin(0.5f)
-	, voltageModifier(true)
+	, voltageModifier(false)
 	, voltageModifierFrom(30000.f)
 	, voltageModifierTo(100000.f)
 {
@@ -103,7 +103,6 @@ void DcrTone::play(float voltage)
 	{
 		float freq = ((voltage / 2.5f) * (voltageModifierTo - voltageModifierFrom)) + voltageModifierFrom;
 		channel->setFrequency(freq);
-		std::cout << voltage << " " << freq << std::endl;
 	}
 }
 
