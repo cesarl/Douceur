@@ -10,6 +10,10 @@ Board::Board(FMOD::System *fmodSystem)
 	{
 		m_pads[i].setPort(i);
 		m_pads[i].setFmodSystem(fmodSystem);
+		if (i >= MAX_PAD_NUMBER / 2)
+		{
+			m_pads[i].setType(RECEIVER);
+		}
 	}
 }
 
@@ -49,4 +53,12 @@ void Board::displayPadsVoltage() const
 		}
 	}
 	ImGui::End();
+}
+
+void Board::updateGui()
+{
+	for (int i = 0; i < MAX_PAD_NUMBER; ++i)
+	{
+		m_pads[i].updateGui();
+	}
 }

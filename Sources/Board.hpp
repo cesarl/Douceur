@@ -15,6 +15,7 @@ public:
 	Board(FMOD::System *fmodSystem);
 	void updatePadsVoltage(const std::string &buffer);
 	void displayPadsVoltage() const;
+	void updateGui();
 private:
 	Pad m_pads[MAX_PAD_NUMBER];
 	FMOD::System *m_fmodSystem;

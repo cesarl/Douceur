@@ -64,7 +64,7 @@ int main(int ac, const char **av)
 	FMOD::Channel      *channel = 0;
 	FMOD::ChannelGroup *mastergroup = 0;
 
-	fmodSystem->init(32, FMOD_INIT_NORMAL, 0);
+	fmodSystem->init(128, FMOD_INIT_NORMAL, 0);
 
 	fmodSystem->getMasterChannelGroup(&mastergroup);
 
@@ -88,7 +88,7 @@ int main(int ac, const char **av)
 		}
 		ImGui_ImplDX11_NewFrame();
 
-		static bool first = false;
+		static bool first = true;
 		static int from = 0;
 		static int to = 400;
 		static float freq = 1.f;
@@ -110,13 +110,13 @@ int main(int ac, const char **av)
 			ImGui::End();
 		}
 
+		if (false)
 		{
 			ImGui::Begin("SoloudTest");
 
 			bool changed = ImGui::SliderInt("from", (int*)&from, 0, soundLength - 1);
 			changed |= ImGui::SliderInt("to", (int*)&to, 1, soundLength);
 			changed |= ImGui::SliderFloat("freq", &freq, 0, 500000.f);
-			changed |= ImGui::SliderFloat("pan", &pan, -10.f, 10.f);
 			changed |= ImGui::SliderFloat("pan", &pan, -1.f, 1.f);
 			changed |= ImGui::SliderFloat("pitch", &pitch, 0.f, 10.f);
 			if (changed)
@@ -137,6 +137,8 @@ int main(int ac, const char **av)
 			ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiSetCond_FirstUseEver);     // Normally user code doesn't need/want to call it because positions are saved in .ini file anyway. Here we just want to make the demo initial state a bit more friendly!
 			ImGui::ShowTestWindow(nullptr);
 		}
+
+		board.updateGui();
 
 		//Arduino test
 		{
